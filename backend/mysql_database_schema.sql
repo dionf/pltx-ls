@@ -1,0 +1,86 @@
+-- MySQL-compatible schema for Plytix to Lightspeed Integration
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(255) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE api_credentials (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  plytix_api_key VARCHAR(255),
+  plytix_api_secret VARCHAR(255),
+  lightspeed_api_key VARCHAR(255),
+  lightspeed_api_secret VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE attribute_mappings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  mapping_name VARCHAR(255) NOT NULL,
+  plytix_attribute VARCHAR(255) NOT NULL,
+  lightspeed_field VARCHAR(255) NOT NULL,
+  transformation_type VARCHAR(50) DEFAULT 'direct',
+  transformation_config JSON,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE sync_jobs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  status VARCHAR(50) NOT NULL DEFAULT 'pending',
+  products_total INT DEFAULT 0,
+  products_synced INT DEFAULT 0,
+  products_failed INT DEFAULT 0,
+  products_skipped INT DEFAULT 0,
+  start_time TIMESTAMP NULL,
+  end_time TIMESTAMP NULL,
+  log_file VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE sync_logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  job_id INT NOT NULL,
+  log_level VARCHAR(20) NOT NULL,
+  message TEXT NOT NULL,
+  product_id VARCHAR(255),
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (job_id) REFERENCES sync_jobs(id) ON DELETE CASCADE
+);
+
+CREATE TABLE workflow_filters (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  attribute_name VARCHAR(255) NOT NULL DEFAULT 'content_workflow',
+  filter_value VARCHAR(255) NOT NULL DEFAULT '4. Ready to be published',
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE sync_schedules (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  frequency VARCHAR(50) NOT NULL,
+  day_of_week INT,
+  hour INT NOT NULL,
+  minute INT NOT NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  last_run TIMESTAMP NULL,
+  next_run TIMESTAMP NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plytix to Lightspeed Integration Demo</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
+            transition: background-color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .hero {
+            background-color: var(--light-color);
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: var(--border-radius);
+        }
+        
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+        
+        .hero p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: #666;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #1a252f;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            text-align: center;
+        }
+        
+        .section-description {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: #666;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .feature-card p {
+            color: #666;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            background-color: #f8f9fa;
+            margin-right: 5px;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-color: #ddd;
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .status-ready {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-draft {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-review {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        
+        .status-archived {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .mapping-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .mapping-box {
+            flex: 1;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+        }
+        
+        .mapping-arrow {
+            margin: 0 20px;
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+        
+        .code-block {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+        
+        .workflow-filter {
+            background-color: #e8f4fd;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        @media (max-width: 768px) {
+            header .container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 10px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .mapping-container {
+                flex-direction: column;
+            }
+            
+            .mapping-arrow {
+                transform: rotate(90deg);
+                margin: 15px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">Plytix to Lightspeed Integration</div>
+            <nav>
+                <ul>
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#data-flow">Data Flow</a></li>
+                    <li><a href="#attribute-mapping">Attribute Mapping</a></li>
+                    <li><a href="#workflow-filtering">Workflow Filtering</a></li>
+                    <li><a href="#demo">Demo</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <div class="hero">
+        <div class="container">
+            <h1>Plytix to Lightspeed Integration</h1>
+            <p>Seamlessly synchronize your product data from Plytix PIM to Lightspeed e-commerce platform with intelligent workflow filtering and customizable attribute mapping.</p>
+            <a href="#demo" class="btn">View Demo</a>
+            <a href="#data-flow" class="btn btn-secondary">Learn More</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <section id="overview" class="section">
+            <h2 class="section-title">Overview</h2>
+            <p class="section-description">This integration connects your Plytix Product Information Management (PIM) system with your Lightspeed e-commerce platform, ensuring your product data is always up-to-date and consistent across both systems.</p>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <h3>Automated Synchronization</h3>
+                    <p>Schedule automatic synchronization or run manual updates to keep your product data in sync between Plytix and Lightspeed.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Custom Attribute Mapping</h3>
+                    <p>Map Plytix attributes to Lightspeed fields with custom transformations to ensure data is formatted correctly for your e-commerce store.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Workflow Filtering</h3>
+                    <p>Only synchronize products that have reached a specific workflow status, ensuring only approved and ready products appear in your store.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Image Synchronization</h3>
+                    <p>Automatically transfer product images from Plytix to Lightspeed, maintaining your visual content across platforms.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Error Handling</h3>
+                    <p>Comprehensive error handling and logging ensures you're always aware of any issues during synchronization.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Secure Authentication</h3>
+                    <p>Secure API authentication with both platforms protects your data while enabling seamless integration.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="data-flow" class="section">
+            <h2 class="section-title">Data Flow</h2>
+            <p class="section-description">Understanding how data flows between Plytix and Lightspeed is essential to making the most of this integration.</p>
+            
+            <div class="card">
+                <h3 class="card-title">Integration Architecture</h3>
+                <p>The integration follows a one-way synchronization pattern, where product data is extracted from Plytix, transformed according to your mapping rules, and loaded into Lightspeed.</p>
+                
+                <div class="code-block">
+                    1. Extract data from Plytix API<br>
+                    2. Apply workflow filtering (content_workflow = "4. Ready to be published")<br>
+                    3. Transform data according to attribute mapping<br>
+                    4. Load data into Lightspeed API<br>
+                    5. Synchronize product images<br>
+                    6. Log results and handle any errors
+                </div>
+                
+                <h4>API Authentication</h4>
+                <p>The integration authenticates with both APIs:</p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>Plytix: Bearer Token authentication</li>
+                    <li>Lightspeed: HTTP Basic authentication</li>
+                </ul>
+                
+                <h4>Synchronization Process</h4>
+                <p>During synchronization, the integration:</p>
+                <ol style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>Retrieves all products from Plytix</li>
+                    <li>Filters products based on workflow status</li>
+                    <li>For each filtered product:
+                        <ul>
+                            <li>Transforms attributes according to mapping</li>
+                            <li>Checks if product exists in Lightspeed</li>
+                            <li>Creates or updates product in Lightspeed</li>
+                            <li>Synchronizes product images</li>
+                        </ul>
+                    </li>
+                    <li>Generates synchronization report</li>
+                </ol>
+            </div>
+        </section>
+        
+        <section id="attribute-mapping" class="section">
+            <h2 class="section-title">Attribute Mapping</h2>
+            <p class="section-description">The integration allows you to map Plytix attributes to Lightspeed fields, ensuring your product data is correctly formatted for your e-commerce store.</p>
+            
+            <div class="card">
+                <h3 class="card-title">Sample Attribute Mapping</h3>
+                
+                <div class="mapping-container">
+                    <div class="mapping-box">
+                        <strong>Plytix Attribute:</strong><br>
+                        product_name
+                    </div>
+                    <div class="mapping-arrow">→</div>
+                    <div class="mapping-box">
+                        <strong>Lightspeed Field:</strong><br>
+                        title
+                    </div>
+                </div>
+                
+                <div class="mapping-container">
+                    <div class="mapping-box">
+                        <strong>Plytix Attribute:</strong><br>
+                        short_description
+                    </div>
+                    <div class="mapping-arrow">→</div>
+                    <div class="mapping-box">
+                        <strong>Lightspeed Field:</strong><br>
+                        description_short
+                    </div>
+                </div>
+                
+                <div class="mapping-container">
+                    <div class="mapping-box">
+                        <strong>Plytix Attribute:</strong><br>
+                        long_description
+                    </div>
+                    <div class="mapping-arrow">→</div>
+                    <div class="mapping-box">
+                        <strong>Lightspeed Field:</strong><br>
+                        description
+                    </div>
+                </div>
+                
+                <div class="mapping-container">
+                    <div class="mapping-box">
+                        <strong>Plytix Attribute:</strong><br>
+                        price
+                    </div>
+                    <div class="mapping-arrow">→</div>
+                    <div class="mapping-box">
+                        <strong>Lightspeed Field:</strong><br>
+                        price
+                    </div>
+                </div>
+                
+                <div class="mapping-container">
+                    <div class="mapping-box">
+                        <strong>Plytix Attribute:</strong><br>
+                        brand_name
+                    </div>
+                    <div class="mapping-arrow">→</div>
+                    <div class="mapping-box">
+                        <strong>Lightspeed Field:</strong><br>
+                        brand
+                    </div>
+                </div>
+                
+                <h4>Custom Transformations</h4>
+                <p>The integration also supports custom transformations for more complex mapping scenarios:</p>
+                
+                <div class="code-block">
+                    // Example: Combining multiple Plytix attributes into one Lightspeed field<br>
+                    function combineAttributes(product) {<br>
+                    &nbsp;&nbsp;return `${product.color} - ${product.size}`;<br>
+                    }<br><br>
+                    
+                    // Example: Converting units<br>
+                    function convertToKilograms(weightInGrams) {<br>
+                    &nbsp;&nbsp;return weightInGrams / 1000;<br>
+                    }
+                </div>
+            </div>
+        </section>
+        
+        <section id="workflow-filtering" class="section">
+            <h2 class="section-title">Workflow Filtering</h2>
+            <p class="section-description">The integration uses workflow filtering to ensure only products that have reached a specific status in your content workflow are synchronized to Lightspeed.</p>
+            
+            <div class="card">
+                <h3 class="card-title">Content Workflow Status</h3>
+                
+                <div class="workflow-filter">
+                    <h4>Current Filter Configuration:</h4>
+                    <p>Only products with the content workflow status <strong>"4. Ready to be published"</strong> will be synchronized to Lightspeed.</p>
+                </div>
+                
+                <p>This ensures that only products that have completed your internal approval process will appear in your e-commerce store.</p>
+                
+                <h4>Available Workflow Statuses</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Status ID</th>
+                            <th>Status Name</th>
+                            <th>Description</th>
+                            <th>Synchronized</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><span class="status status-draft">1. Draft</span></td>
+                            <td>Initial product creation, incomplete information</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><span class="status status-draft">2. Content in progress</span></td>
+                            <td>Product information being added and refined</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><span class="status status-review">3. Ready for review</span></td>
+                            <td>Product information complete, awaiting approval</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><span class="status status-ready">4. Ready to be published</span></td>
+                            <td>Product approved and ready for e-commerce</td>
+                            <td>Yes</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><span class="status status-archived">5. Archived</span></td>
+                            <td>Product no longer active</td>
+                            <td>No</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4>Implementation</h4>
+                <p>The workflow filtering is implemented in the synchronization process:</p>
+                
+                <div class="code-block">
+                    // Fetch products from Plytix<br>
+                    const allProducts = await plytixApi.getProducts();<br><br>
+                    
+                    // Filter products by workflow status<br>
+                    const productsToSync = allProducts.filter(product => {<br>
+                    &nbsp;&nbsp;return product.content_workflow === "4. Ready to be published";<br>
+                    });<br><br>
+                    
+                    // Proceed with synchronization for filtered products<br>
+                    for (const product of productsToSync) {<br>
+                    &nbsp;&nbsp;// Transform and sync to Lightspeed<br>
+                    }
+                </div>
+            </div>
+        </section>
+        
+        <section id="demo" class="section">
+            <h2 class="section-title">Interactive Demo</h2>
+            <p class="section-description">Explore how the Plytix to Lightspeed integration works with this interactive demonstration.</p>
+            
+            <div class="card">
+                <h3 class="card-title">Product Synchronization Demo</h3>
+                
+                <div class="tabs">
+                    <div class="tab active" onclick="openTab(event, 'products-tab')">Products</div>
+                    <div class="tab" onclick="openTab(event, 'mapping-tab')">Mapping</div>
+                    <div class="tab" onclick="openTab(event, 'sync-tab')">Synchronization</div>
+                </div>
+                
+                <div id="products-tab" class="tab-content active">
+                    <h4>Plytix Products</h4>
+                    <p>These are the products in your Plytix PIM system:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Product Name</th>
+                                <th>SKU</th>
+                                <th>Price</th>
+                                <th>Workflow Status</th>
+                                <th>Will Sync</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>P001</td>
+                                <td>Ergonomic Office Chair</td>
+                                <td>CHAIR-001</td>
+                                <td>$249.99</td>
+                                <td><span class="status status-ready">4. Ready to be published</span></td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>P002</td>
+                                <td>Adjustable Standing Desk</td>
+                                <td>DESK-002</td>
+                                <td>$499.99</td>
+                                <td><span class="status status-ready">4. Ready to be published</span></td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>P003</td>
+                                <td>Wireless Keyboard</td>
+                                <td>KEY-003</td>
+                                <td>$79.99</td>
+                                <td><span class="status status-draft">2. Content in progress</span></td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>P004</td>
+                                <td>Bluetooth Mouse</td>
+                                <td>MOUSE-004</td>
+                                <td>$49.99</td>
+                                <td><span class="status status-review">3. Ready for review</span></td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>P005</td>
+                                <td>Laptop Stand</td>
+                                <td>STAND-005</td>
+                                <td>$39.99</td>
+                                <td><span class="status status-ready">4. Ready to be published</span></td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>P006</td>
+                                <td>Monitor Arm</td>
+                                <td>ARM-006</td>
+                                <td>$129.99</td>
+                                <td><span class="status status-draft">1. Draft</span></td>
+                                <td>❌</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="mapping-tab" class="tab-content">
+                    <h4>Attribute Mapping Configuration</h4>
+                    <p>This is how Plytix attributes are mapped to Lightspeed fields:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Plytix Attribute</th>
+                                <th>Lightspeed Field</th>
+                                <th>Transformation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>product_name</td>
+                                <td>title</td>
+                                <td>Direct mapping</td>
+                            </tr>
+                            <tr>
+                                <td>short_description</td>
+                                <td>description_short</td>
+                                <td>Direct mapping</td>
+                            </tr>
+                            <tr>
+                                <td>long_description</td>
+                                <td>description</td>
+                                <td>Direct mapping</td>
+                            </tr>
+                            <tr>
+                                <td>price</td>
+                                <td>price</td>
+                                <td>Direct mapping</td>
+                            </tr>
+                            <tr>
+                                <td>sku</td>
+                                <td>sku</td>
+                                <td>Direct mapping</td>
+                            </tr>
+                            <tr>
+                                <td>brand_name</td>
+                                <td>brand</td>
+                                <td>Direct mapping</td>
+                            </tr>
+                            <tr>
+                                <td>weight_g</td>
+                                <td>weight</td>
+                                <td>Convert from grams to kg</td>
+                            </tr>
+                            <tr>
+                                <td>color + size</td>
+                                <td>variant_title</td>
+                                <td>Combine attributes</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="sync-tab" class="tab-content">
+                    <h4>Synchronization Results</h4>
+                    <p>After running the synchronization with workflow filtering, these are the results:</p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <strong>Summary:</strong>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Total products in Plytix: 6</li>
+                            <li>Products with "4. Ready to be published" status: 3</li>
+                            <li>Products synchronized to Lightspeed: 3</li>
+                            <li>Products skipped due to workflow status: 3</li>
+                        </ul>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Status</th>
+                                <th>Result</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ergonomic Office Chair</td>
+                                <td><span class="status status-ready">4. Ready to be published</span></td>
+                                <td>Synchronized</td>
+                                <td>Created in Lightspeed</td>
+                            </tr>
+                            <tr>
+                                <td>Adjustable Standing Desk</td>
+                                <td><span class="status status-ready">4. Ready to be published</span></td>
+                                <td>Synchronized</td>
+                                <td>Updated in Lightspeed</td>
+                            </tr>
+                            <tr>
+                                <td>Wireless Keyboard</td>
+                                <td><span class="status status-draft">2. Content in progress</span></td>
+                                <td>Skipped</td>
+                                <td>Workflow status not ready</td>
+                            </tr>
+                            <tr>
+                                <td>Bluetooth Mouse</td>
+                                <td><span class="status status-review">3. Ready for review</span></td>
+                                <td>Skipped</td>
+                                <td>Workflow status not ready</td>
+                            </tr>
+                            <tr>
+                                <td>Laptop Stand</td>
+                                <td><span class="status status-ready">4. Ready to be published</span></td>
+                                <td>Synchronized</td>
+                                <td>Created in Lightspeed</td>
+                            </tr>
+                            <tr>
+                                <td>Monitor Arm</td>
+                                <td><span class="status status-draft">1. Draft</span></td>
+                                <td>Skipped</td>
+                                <td>Workflow status not ready</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Plytix to Lightspeed Integration | All Rights Reserved</p>
+        </div>
+    </footer>
+    
+    <script>
+        function openTab(evt, tabName) {
+            // Hide all tab content
+            var tabContents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+            
+            // Remove active class from all tabs
+            var tabs = document.getElementsByClassName("tab");
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+            
+            // Show the selected tab content and add active class to the button
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
